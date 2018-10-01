@@ -2,30 +2,32 @@ var https = require('https');
 
 function getAndPrintHTML () {
 
-
   var requestOptions = {
     host: 'sytantris.github.io',
-    path: '/http-examples/step1.html'
+    path: '/http-examples/step2.html'
   };
 
+  https.get(requestOptions, function (response) {
+    var output = "";
 
-  var callback = function(response) {
-    console.log("response to handler callback");
+  // set encoding of received data to UTF-8
+  response.setEncoding('utf8');
 
-    response.on("data", function(chunk) {
-      var output = {};
-      console.log("[-- CHUNK " + chunk.length + " --]");
-      console.log(output.push(chunk))
-    });
-  }
+  // the callback is invoked when a `data` chunk is received
+  response.on('data', function (data) {
+    console.log(output += data);
 
-  console.log("about to make request");
+  });
 
-  https.request(requestOptions, callback).end();
+  // the callback is invoked when all of the data has been received
+  // (the `end` of the stream)
+  response.on('end', function() {
+    console.log('Response stream complete.');
+  });
 
-  console.log("request made");
+});
 
-};
+}
 
 getAndPrintHTML();
 
